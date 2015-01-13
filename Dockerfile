@@ -7,6 +7,7 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install git xvfb sqlite3 
     apt-get update && apt-get -y install google-chrome-stable; \
     git clone https://anon:anon@github.com/stongo/webrtc-tester.git /root/webrtc-tester; \
     cd /root/webrtc-tester; \
+    git checkout dockerify; \
     chmod +x test-runner.sh; \
     chmod +x test-browser.sh
 WORKDIR /root/webrtc-tester
