@@ -2,15 +2,17 @@
 (
   flock -x -w 10 200 || exit 1
 
-  TIMEOUT="200"
+  [ -z "$TEST_TIMEOUT" ] && TEST_TIMEOUT="120"
   DISPLAY=
-  HOST=${1:-"talky.io"}
+  [ -z "$TEST_HOST" ] && TEST_HOST=${1:-"talky.io"}
   ROOM="automatedtesting_${RANDOM}"
-  COND=${2:-"P2P connected"} # talky
-  #COND="data channel open" # talky pro
-  #COND="ICE connection state changed to: connected" # apprtc
-  #COND="onCallActive" # go
-  #COND="Data channel opened" # meet
+  [ -z "$TEST_COND" ] && TEST_COND=${2:-"P2P connected"} # talky
+  #TEST_COND="data channel open" # talky pro
+  #TEST_COND="ICE connection state changed to: connected" # apprtc
+  #TEST_COND="onCallActive" # go
+  #TEST_COND="Data channel opened" # meet
+
+  echo "-- testing $TEST_HOST for condition $TEST_COND"
 
   # make sure we kill any Xvfb instances
   function cleanup() {
@@ -25,15 +27,15 @@
   trap cleanup EXIT
 
   # this timeout is for the overall test process
-  ( sleep ${TIMEOUT} ) &
+  ( sleep ${TEST_TIMEOUT} ) &
   pidwatcher=$!
 
   # browser #1
-  ( ./test-browser.sh google-chrome $HOST "${ROOM}" "${COND}" >> log1.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
+  ( ./test-browser.sh google-chrome $TEST_HOST "${ROOM}" "${TEST_COND}" >> log1.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
   pidwatch=$!
 
   # browser #2
-  ( ./test-browser.sh chromium-browser $HOST "${ROOM}" "${COND}" >> log2.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
+  ( ./test-browser.sh chromium-browser $TEST_HOST "${ROOM}" "${TEST_COND}" >> log2.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
   pidwatch2=$!
 
   #echo "${pidwatcher} watching ${pidwatch} ${pidwatch2}"
