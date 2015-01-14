@@ -14,28 +14,16 @@
 
   echo "-- testing $TEST_HOST for condition $TEST_COND"
 
-  # make sure we kill any Xvfb instances
-  function cleanup() {
-    exec 3>&2
-    exec 2>/dev/null
-    pkill Xvfb
-    pkill -HUP -P $pidwatch
-    pkill -HUP -P $pidwatch2
-    exec 2>&3
-    exec 3>&-
-  }
-  trap cleanup EXIT
-
   # this timeout is for the overall test process
   ( sleep ${TEST_TIMEOUT} ) &
   pidwatcher=$!
 
   # browser #1
-  ( ./test-browser.sh google-chrome $TEST_HOST "${ROOM}" "${TEST_COND}" >> log1.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
+  ( /usr/bin/docker run --rm=true -m 3g -c 3 -p 80:80 -p 443:443 otalk/webrtc-tester "google-chrome" $TEST_HOST "${ROOM}" "${TEST_COND}" >> log1.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
   pidwatch=$!
 
   # browser #2
-  ( ./test-browser.sh chromium-browser $TEST_HOST "${ROOM}" "${TEST_COND}" >> log2.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
+  ( /usr/bin/docker run --rm=true -m 3g -c 3 -p 80:80 -p 443:443 otalk/webrtc-tester "google-chrome" $TEST_HOST "${ROOM}" "${TEST_COND}" >> log2.log 2>&1 ; kill $pidwatcher 2> /dev/null ) 2>/dev/null &
   pidwatch2=$!
 
   #echo "${pidwatcher} watching ${pidwatch} ${pidwatch2}"

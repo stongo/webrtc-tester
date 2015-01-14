@@ -87,7 +87,7 @@ fi
 # "eval" below is required by $XVFB containing a quoted argument.
 case "$BROWSER" in
   "google-chrome" | "google-chrome-stable" | "google-chrome-beta" | "google-chrome-unstable" | "chromium-browser")
-    eval nice -20 $XVFB $BROWSER \
+    eval $XVFB $BROWSER \
       --enable-logging=stderr \
       --no-first-run \
       --no-default-browser-check \
@@ -100,7 +100,7 @@ case "$BROWSER" in
     PID=$!
   ;;
   "firefox")
-    eval nice -20 $XVFB mozrunner \
+    eval $XVFB mozrunner \
       -p ${D} \
       --binary ${BROWSER} \
       --app-arg=${URL} > $LOG_FILE 2>&1 &
