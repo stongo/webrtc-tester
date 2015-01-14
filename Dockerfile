@@ -11,4 +11,4 @@ RUN apt-get update && apt-get -y upgrade && apt-get -y install git xvfb sqlite3 
     chmod +x test-runner.sh; \
     chmod +x test-browser.sh
 WORKDIR /root/webrtc-tester
-CMD ./test-runner.sh
+ENTRYPOINT ["./test-browser.sh"]

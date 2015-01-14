@@ -110,6 +110,7 @@ esac
 
 # wait for stop condition to appear in log
 while ! grep -q "${COND}" $LOG_FILE && browser_pids|grep -q .; do
+  tail -10 $LOG_FILE
   sleep 0.1
 done
 

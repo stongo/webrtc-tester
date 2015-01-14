@@ -19,7 +19,8 @@ test_run () {
     sleep $SLEEP
     echo "$host"
     # run the test
-    TEST=$(/opt/sbin/webrtc-tester/test-runner.sh "$host" "${ITEMS["$host"]}")
+    cd /opt/sbin/webrtc-tester/
+    TEST=$(./test-runner.sh "$host" "${ITEMS["$host"]}")
     # A pass produces no output, so test for string for a test fail
     if [ -n "$TEST" ]; then
       echo "[alert] $host: WEBRTC TEST FAIL" | tee /opt/sbin/webrtc-tester/test.log
